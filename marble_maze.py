@@ -24,7 +24,7 @@ blank = (0, 0, 0)
 CoordinateObject = recordclass('CoordinateObject', 'x y')
 
 # Marble position
-marble = CoordinateObject(1, 1)
+marble = CoordinateObject(0, 0)
 
 # Maze walls
 maze = [[r,r,r,r,r,r,r,r],
@@ -77,13 +77,14 @@ def check_wall(x, y, new_x, new_y):
     else:
         return x, y
 
-# Set marble at random location
-#def set_marble():
-
-# Traverses map to find number of goals left
-#def get_number_of_remaining_goals():
-
-
+# Sets marble at random location (could to use part of below func)
+def set_marble():
+    # The 'global' keyword is not needed here because what's changed is the _value_, 
+    # not the underlying reference. Somewhat confusing...
+    while maze[marble.y][marble.x] != b:
+        marble.y = random.randint(1, 6)
+        marble.x = random.randint(1, 6)
+    
 # Set goals at random location
 def set_goals(number_of_goals):
     
@@ -93,26 +94,35 @@ def set_goals(number_of_goals):
         
         x = 0; y = 0
         while maze[y][x] != b:
-            y = random.randint(0, 7)
-            x = random.randint(0, 7)
+            # The walls are at 0 and 7, so no need to even
+            # bother generating a number with them 
+            # randint is range-inclusive
+            y = random.randint(1, 6) 
+            x = random.randint(1, 6)
 
         # Pixel set after safe coordinate is found
         maze[y][x] = g
 
 # Main-------------------------
 
-set_goals(4)
+# Initial setup
+set_marble()
+set_goals(3)
+
+# Execution
 while game_over == False:
     o = get_pi_orientation()
     marble.x, marble.y = move_marble(o[0], o[1], marble.x, marble.y)
 
-    if maze[marble.y][marble.x] == g:
+    maze[marble.y][marble.x] = w # Sets marble
+    sh.set_pixels(sum(maze,[])) # Displays pixels
+    
+    # This checks each list in the 2d maze list,
+    # seeing if a green object appears
+    if not any(g in inner_list for inner_list in maze):
         game_over = True
         sh.set_rotation(180)
         sh.show_message("You Win!!!")
-
-    maze[marble.y][marble.x] = w # Sets marble
-    sh.set_pixels(sum(maze,[])) # Displays pixels
 
     sleep(0.1)
     maze[marble.y][marble.x] = blank # Clears previous marble position
