@@ -18,11 +18,14 @@ w = (255, 255, 255)
 
 blank = (0, 0, 0)
 
-# Marble position
 # Named tuples are immutable and structs aren't available in Python, so using recordclass,
 # an external dependency installed with `$ pip install recordclass`
 CoordinateObject = recordclass('CoordinateObject', 'x y')
+
+# Marble position
 marble = CoordinateObject(1, 1)
+# Goal position
+goal_1 = CoordinateObject(4, 6)
 
 # Maze walls
 maze = [[r,r,r,r,r,r,r,r],
@@ -31,7 +34,7 @@ maze = [[r,r,r,r,r,r,r,r],
         [r,b,r,b,r,r,r,r],
         [r,b,b,b,b,b,b,r],
         [r,b,r,r,r,r,b,r],
-        [r,b,b,r,g,b,b,r],
+        [r,b,b,r,b,b,b,r],
         [r,r,r,r,r,r,r,r]]
 
 # Functions--------------------
@@ -75,8 +78,12 @@ def check_wall(x, y, new_x, new_y):
     else:
         return x, y
 
+def set_goal(x, y):
+    maze[y][x] = g
+
 # Main-------------------------
 
+set_goal(goal_1.x, goal_1.y)
 while game_over == False:
     o = get_pi_orientation()
     marble.x, marble.y = move_marble(o[0], o[1], marble.x, marble.y)
