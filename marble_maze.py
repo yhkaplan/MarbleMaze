@@ -1,5 +1,6 @@
 from sense_hat import SenseHat
 from time import sleep
+from recordclass import recordclass
 
 sh = SenseHat()
 sh.clear()
@@ -18,8 +19,10 @@ w = (255, 255, 255)
 blank = (0, 0, 0)
 
 # Marble position
-x = 1
-y = 1
+# Named tuples are immutable and structs aren't available in Python, so using recordclass,
+# an external dependency installed with `$ pip install recordclass`
+CoordinateObject = recordclass('CoordinateObject', 'x y')
+marble = CoordinateObject(1, 1)
 
 # Maze walls
 maze = [[r,r,r,r,r,r,r,r],
@@ -76,16 +79,16 @@ def check_wall(x, y, new_x, new_y):
 
 while game_over == False:
     o = get_pi_orientation()
-    x,y = move_marble(o[0], o[1], x, y)
+    marble.x, marble.y = move_marble(o[0], o[1], marble.x, marble.y)
 
-    if maze[y][x] == g:
+    if maze[marble.y][marble.x] == g:
         game_over = True
         sh.set_rotation(180)
         sh.show_message("You Win!!!")
 
-    maze[y][x] = w # Sets marble
+    maze[marble.y][marble.x] = w # Sets marble
     sh.set_pixels(sum(maze,[])) # Displays pixels
 
     sleep(0.1)
-    maze[y][x] = blank # Clears previous marble position
+    maze[marble.y][marble.x] = blank # Clears previous marble position
 
