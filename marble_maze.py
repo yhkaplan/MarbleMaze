@@ -1,6 +1,7 @@
 from sense_hat import SenseHat
 from time import sleep
-from recordclass import recordclass
+from recordclass import recordclass # For mutable named-tuple-like objects
+import random
 
 sh = SenseHat()
 sh.clear()
@@ -24,8 +25,6 @@ CoordinateObject = recordclass('CoordinateObject', 'x y')
 
 # Marble position
 marble = CoordinateObject(1, 1)
-# Goal position
-goal_1 = CoordinateObject(4, 6)
 
 # Maze walls
 maze = [[r,r,r,r,r,r,r,r],
@@ -78,12 +77,31 @@ def check_wall(x, y, new_x, new_y):
     else:
         return x, y
 
-def set_goal(x, y):
-    maze[y][x] = g
+# Set marble at random location
+#def set_marble():
+
+# Traverses map to find number of goals left
+#def get_number_of_remaining_goals():
+
+
+# Set goals at random location
+def set_goals(number_of_goals):
+    
+    # The range is non-inclusive for the upper end,
+    # so starting at 0 is a way to get the right number
+    for i in range(0, number_of_goals):
+        
+        x = 0; y = 0
+        while maze[y][x] != b:
+            y = random.randint(0, 7)
+            x = random.randint(0, 7)
+
+        # Pixel set after safe coordinate is found
+        maze[y][x] = g
 
 # Main-------------------------
 
-set_goal(goal_1.x, goal_1.y)
+set_goals(4)
 while game_over == False:
     o = get_pi_orientation()
     marble.x, marble.y = move_marble(o[0], o[1], marble.x, marble.y)
